@@ -3,7 +3,7 @@
     <rim:AdhocQuery id="urn:uuid:14d4debf-8f97-4251-9a74-a90016b0af0d">
         <rim:Slot name="$XDSDocumentEntryPatientId">
             <rim:ValueList>
-                <rim:Value>5555^^^&amp;2.16.840.1.113883.3.72.5.9.1&amp;ISO</rim:Value>
+                <rim:Value>513289498794683060^^^&amp;2.16.840.1.113883.3.72.5.9.1&amp;ISO</rim:Value>
             </rim:ValueList>
         </rim:Slot>
         <rim:Slot name="$XDSDocumentEntryStatus">

@@ -54,8 +54,11 @@ public class NewClientRegistryUtil extends TestCase {
         //return HL7IO.send_rcv_hl7_msg(HOST, getPort(in), 0, HL7IO.convert_lf_to_cr(in));
 
         //in = in.replace("|2.5", "|2.5\n");
+        System.out.println("gr : " + in);
 
         int port = getPort(in);
+
+        //String host_1 = "crwin.test.ohie.org";
         final Socket sd = connect(HOST, port, 0);
         Writer w;
         BufferedReader r;
@@ -68,6 +71,7 @@ public class NewClientRegistryUtil extends TestCase {
             sd.close();
         }
     }
+
 
     public static String send_rcv_hl7_msg(final String host, final int port, final Writer dsd_w, final Reader dsd_r,
                                           final String msg, final String header) throws IOException {

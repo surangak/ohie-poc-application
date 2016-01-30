@@ -2012,6 +2012,7 @@ public final class Util {
      * @throws IOException if an I/O error occurs while reading the file
      **/
     public final static String readFile(final String name) throws IOException {
+        System.out.println(" errrrr ");
         final StringBuilder sb = new StringBuilder();
         final char[] buffer = new char[BUFFER_SIZE];
         FileReader f = null;

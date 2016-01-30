@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.List;
 
 import ca.uhn.hl7v2.HL7Exception;
-import ca.uhn.hl7v2.model.v25.message.ADT_A01;
 import ca.uhn.hl7v2.model.v25.message.RSP_K21;
 
 
@@ -24,10 +23,10 @@ import org.dcm4chee.xds2.infoset.ihe.ProvideAndRegisterDocumentSetRequestType;
 import org.dcm4chee.xds2.infoset.rim.RegistryResponseType;
 
 
-
+import org.ohie.pocdemo.form.util.MainUtil;
 import org.ohie.pocdemo.form.util.NewClientRegistryUtil;
 
-import org.ohie.pocdemo.form.util.ATestInfoMan;
+import org.ohie.pocdemo.form.util.TestInfoMan;
 import org.ohie.pocdemo.form.util.XdsMessageUtil;
 import org.regenstrief.util.Util;
 import org.springframework.stereotype.Controller;
@@ -60,7 +59,7 @@ public class MainController {
     List<Patient> patients = new ArrayList<Patient>();
     List<Provider> providers = new ArrayList<Provider>();
 
-    private final static String LOCATION_INPUT = "/Users/snkasthu/Downloads/pocdemo/src/main/resources";
+    private final static String LOCATION_INPUT = "/Users/snkasthu/SourceCode/ohiedemo/pocdemo/src/main/resources";
 
 
     @RequestMapping(method = RequestMethod.GET)
@@ -106,7 +105,7 @@ public class MainController {
 
                 patient = getPatient(patient);
                 ModifyXDSbMessage modify = new ModifyXDSbMessage(patient);
-                modify.modify(LOCATION_INPUT + "/xds/OHIE-XDS-01-20.xml");
+                //modify.modify(LOCATION_INPUT + "/xds/OHIE-XDS-01-20.xml");
 
                 try {
                     queryRequest = XdsMessageUtil.loadMessage("OHIE-XDS-01-20", AdhocQueryRequest.class);
@@ -141,29 +140,32 @@ public class MainController {
 
             if (action.equals("patient")) {
                 String returnVal = "successForm";
+                System.out.println("re : " );
+
 
                 final String loc = LOCATION_INPUT + "/" + "INT01A-1full.hl7", in = Util.readFile(loc);
 
                 PipeParser pipeParser = new PipeParser();
 
                 try {
+                    System.out.println("re : " + in);
                     Message message = pipeParser.parse(in);
-                    ADT_A01 ack = null;
+                    //ADT_A01 ack = null;
 
-                    if (message instanceof ADT_A01) {
+                    //if (message instanceof ADT_A01) {
 
-                        ack = (ADT_A01) message;
-                        ack.getPID().getPatientName(0).getGivenName().setValue(patient.getFirstName());
+                       // ack = (ADT_A01) message;
+                        /** ack.getPID().getPatientName(0).getGivenName().setValue(patient.getFirstName());
                         ack.getPID().getPatientName(0).getFamilyName().getSurname().setValue(patient.getLastName());
 
                         ack.getPID().getPatientIdentifierList(0).getIdentifierTypeCode().setValue(patient.getIdentifierType());
-                        ack.getPID().getPatientIdentifierList(0).getIDNumber().setValue(patient.getIdentifier());
+                        ack.getPID().getPatientIdentifierList(0).getIDNumber().setValue(patient.getIdentifier()); **/
 
-                    }
+                    //}
 
 
                     NewClientRegistryUtil n1 = new NewClientRegistryUtil();
-                    responseString = n1.send(pipeParser.encode(ack));
+                    responseString = n1.send(in);
                     System.out.print("*********************");
                     System.out.print(responseString);
                     System.out.print("*********************");
@@ -175,41 +177,28 @@ public class MainController {
             }
 
             if (action.equals("search")) {
+                System.out.println(" oopppppp ");
                 final String loc = LOCATION_INPUT + "/" + "INT01A-2query.hl7", in = Util.readFile(loc);
-                PipeParser pipeParser = new PipeParser();
+                System.out.println(" oopppppp 2 ");
 
-                try {
-                        Message message = pipeParser.parse(in);
+                String result = MainUtil.queryPatient(in, patient);
 
-                        String firstDelim = "QPD|Q22^Find Candidates^HL7|Q0740|";
-                        int p1 = in.indexOf(firstDelim);
-                        String lastDelim = "RCP";
-                        int p2 = in.indexOf(lastDelim, p1);   // look after start delimiter
-                        String replacement = "@PID.3.1^" + patient.getIdentifier() + "~@PID.3.4.1^" + patient.getIdentifierType() + "\n";
-                        String res = null;
-                        if (p1 >= 0 && p2 > p1) {
-                             res = in.substring(0, p1+firstDelim.length())
-                                    + replacement
-                                    + in.substring(p2);
-                            System.out.println(res);
-                        }
+                System.out.println(" resultx _" + result);
+
 
                         NewClientRegistryUtil n1 = new NewClientRegistryUtil();
-                        responseString = n1.send(res);
+                        responseString = n1.send(result);
                         System.out.print("*********************");
                         System.out.print(responseString);
                         System.out.print("*********************");
                         form.setQueryPatientResult(responseString);
 
 
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
             }
 
             if (action.equals("searchFacility")){
-                ATestInfoMan infoMan = new ATestInfoMan();
-                String result = infoMan.testInfoMan(form.getFacilityName());
+                TestInfoMan infoMan = new TestInfoMan();
+                String result = infoMan.testInfoMan(form.getFacilityName(), form.getMaxresponses());
                 form.setQueryFacilityResult(result);
                 /**String facilityQuery = infoMan.queryFacilityByName(form.getFacilityName());
                 System.out.println("controller :" + facilityQuery);
@@ -217,8 +206,8 @@ public class MainController {
             }
 
             if (action.equals("searchProvider")){
-                ATestInfoMan infoMan = new ATestInfoMan();
-                String result = infoMan.testInfoMan(form.getProviderName());
+                TestInfoMan infoMan = new TestInfoMan();
+                String result = infoMan.testProvider(form.getProviderName(), form.getMaxresponses());
                 form.setQueryProviderResult(result);
             }
 

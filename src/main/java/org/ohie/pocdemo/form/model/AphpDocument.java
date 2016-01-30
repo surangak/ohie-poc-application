@@ -34,6 +34,10 @@ public class AphpDocument {
 
 	private String queryProviderResult;
 
+	private int maxresponses;
+
+	private int maxProviderresponses;
+
 	public String getQueryDataResult() {
 		return queryDataResult;
 	}
@@ -152,5 +156,21 @@ public class AphpDocument {
 
 	public void setProviderName(String providerName) {
 		this.providerName = providerName;
+	}
+
+	public int getMaxresponses() {
+		return maxresponses;
+	}
+
+	public void setMaxresponses(int maxresponses) {
+		this.maxresponses = maxresponses;
+	}
+
+	public int getMaxProviderresponses() {
+		return maxProviderresponses;
+	}
+
+	public void setMaxProviderresponses(int maxProviderresponses) {
+		this.maxProviderresponses = maxProviderresponses;
 	}
 }

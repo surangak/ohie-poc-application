@@ -52,5 +52,6 @@
     <orderEntry type="library" name="Maven: ca.uhn.hapi:hapi-structures-v25:2.0" level="project" />
     <orderEntry type="library" name="Maven: ca.uhn.hapi:hapi-structures-v26:2.0" level="project" />
     <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.9" level="project" />
+    <orderEntry type="library" name="commons-codec-1.6" level="project" />
   </component>
 </module>

@@ -50,18 +50,28 @@
     }
 
     function queryPatient(){
-        if (typeof(Storage) !== "undefined") {
-            // Store
-            localStorage.setItem("activetab", "3");
-            // Retrieve
+        if(!document.getElementById("identifier").value || !document.getElementById("identifierType").value){
+            document.getElementById("queryPatientWarnMsg").style.color = "red";
+            document.getElementById("queryPatientWarnMsg").innerHTML = "Specify";
+            return false;
+        }
+        else {
+            document.getElementById("queryPatientWarnMsg").innerHTML = "";
+            if (typeof(Storage) !== "undefined") {
+                // Store
+                localStorage.setItem("activetab", "3");
+                // Retrieve
+            }
         }
     }
 
     function queryFacility(){
         if(!document.getElementById("facilityName").value){
+            document.getElementById("facilityWarnMsg").style.color = "red";
             document.getElementById("facilityWarnMsg").innerHTML = "Specify";
             return false;
         } else {
+            document.getElementById("facilityWarnMsg").innerHTML = "";
             if (typeof(Storage) !== "undefined") {
                 // Store
                 localStorage.setItem("activetab", "4");
@@ -72,9 +82,11 @@
 
     function queryProvider(){
         if(!document.getElementById("providerName").value){
+            document.getElementById("providerWarnMsg").style.color = "red";
             document.getElementById("providerWarnMsg").innerHTML = "Specify";
             return false;
         } else {
+            document.getElementById("providerWarnMsg").innerHTML = "";
             if (typeof(Storage) !== "undefined") {
                 // Store
                 localStorage.setItem("activetab", "5");
@@ -96,7 +108,7 @@
 </script>
 </head>
 <body>
-<h2 font-family="Verdana,Arial,sans-serif" align="center">POC Demo Application</h2>
+<h2 font-family="Arial" align="center">POC Demo Application</h2>
 <div id="tabs">
     <ul>
         <li><a href="#tabs-1">Create APHP Document</a></li>
@@ -105,6 +117,7 @@
         <li><a href="#tabs-4">Query Patient</a></li>
         <li><a href="#tabs-5">Query Facility</a></li>
         <li><a href="#tabs-6">Query Provider</a></li>
+        <li><a href="#tabs-6"></a></li>
 
 
 
@@ -177,7 +190,11 @@
                 </form:form>
             </div>
         <div style="display:inline-block;border:1px solid green;width:100%;height:100%" class="padding">
-            <label id="savePatient">${form.createPatientResult}</label>
+
+                                    <pre>
+  <c:out value="${form.createPatientResult}" />
+</pre>
+
         </div>
 
 
@@ -188,8 +205,8 @@
             <form:form method="POST" id="frm" commandName="search" onsubmit="queryPatient()">
                 <table cellpadding="10">
                     <tr><td></td></tr>
-                    <tr><td>Patient Identifier </td><td><input type="text" name="identifier"></td></tr>
-                    <tr><td>Identifier Type </td><td><input type="text" name="identifierType"></td></tr>
+                    <tr><td>Patient Identifier </td><td><input type="text" id="identifier" name="identifier"></td><td><label id="queryPatientWarnMsg"></label></td></tr>
+                    <tr><td>Identifier Type </td><td><input type="text" id="identifierType" name="identifierType"></td><td><label id="queryPatientWarnMsg"></label></td></tr>
                     <tr></tr>
                     <tr>
                         <td><button type="submit" name="action" value="search" font-family="Verdana,Arial,sans-serif; font-size: 1em;">Query Patient</button></td>
@@ -203,17 +220,22 @@
             </form:form>
         </div>
         <div style="display:inline-block;border:1px solid green;width:100%;height:100%" class="padding;">
-            <label id="queryPatient">${form.queryPatientResult}</label>
+
+                        <pre>
+  <c:out value="${form.queryPatientResult}" />
+</pre>
+
         </div>
     </div>
 
     <div id="tabs-5">
         <div style="display:inline-block;border:1px solid green;" class="padding">
 
-            <form:form method="POST" id="queryFacility" commandName="search" onclick="return queryFacility()">
+            <form:form method="POST" id="queryFacility" commandName="search" onsubmit="return queryFacility()">
                 <table cellpadding="10">
                     <tr><td></td></tr>
                     <tr><td>Facility Name </td><td><input type="text" id="facilityName" name="facilityName"></td><td><label id="facilityWarnMsg"></label></td></tr>
+                    <tr><td>Maximum Responses</td><td><input type="text" id="maxresponses" name="maxresponses"></td></tr>
                     <tr></tr>
                     <tr>
                         <td><button type="submit" name="action" value="searchFacility" font-family="Verdana,Arial,sans-serif; font-size: 1em;">Query Facility</button></td>
@@ -227,17 +249,20 @@
             </form:form>
         </div>
         <div style="display:inline-block;border:1px solid green;width:100%;height:100%" class="padding;">
-            <label id="queryFacility">${fn:escapeXml(form.queryFacilityResult)}</label>
+            <pre>
+  <c:out value="${form.queryFacilityResult}" />
+</pre>
         </div>
     </div>
 
     <div id="tabs-6">
         <div style="display:inline-block;border:1px solid green;" class="padding">
 
-            <form:form method="POST" id="queryProvider" commandName="search" onclick=" return queryProvider()">
+            <form:form method="POST" id="queryProvider" commandName="search" onsubmit=" return queryProvider()">
                 <table cellpadding="10">
                     <tr><td></td></tr>
                     <tr><td>Provider Name </td><td><input type="text" id="providerName" name="providerName"></td><td><label id="providerWarnMsg"></label></td></tr>
+                    <tr><td>Maximum Responses</td><td><input type="text" id="maxProviderresponses" name="maxresponses"></td></tr>
                     <tr></tr>
                     <tr>
                         <td><button type="submit" name="action" value="searchProvider" font-family="Verdana,Arial,sans-serif; font-size: 1em;">Query Provider</button></td>
@@ -251,7 +276,11 @@
             </form:form>
         </div>
         <div style="display:inline-block;border:1px solid green;width:100%;height:100%" class="padding;">
-            <label id="queryProvider">${fn:escapeXml(form.queryProviderResult)}</label>
+
+                        <pre>
+  <c:out value="${form.queryProviderResult}" />
+</pre>
+
         </div>
     </div>
 

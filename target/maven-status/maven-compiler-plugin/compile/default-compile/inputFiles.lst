@@ -51,7 +51,6 @@
 /Users/snkasthu/SourceCode/ohiedemo/pocdemo/src/main/java/org/regenstrief/hl7/datatype/DT.java
 /Users/snkasthu/SourceCode/ohiedemo/pocdemo/src/main/java/org/regenstrief/hl7/datatype/FC.java
 /Users/snkasthu/SourceCode/ohiedemo/pocdemo/src/main/java/org/ohie/pocdemo/form/model/Patient.java
-/Users/snkasthu/SourceCode/ohiedemo/pocdemo/src/main/java/org/ohie/pocdemo/form/util/ATestInfoMan.java
 /Users/snkasthu/SourceCode/ohiedemo/pocdemo/src/main/java/org/regenstrief/util/collection/CriterionIterable.java
 /Users/snkasthu/SourceCode/ohiedemo/pocdemo/src/main/java/org/regenstrief/hl7/util/PipeReader.java
 /Users/snkasthu/SourceCode/ohiedemo/pocdemo/src/main/java/org/regenstrief/hl7/datatype/CE.java
@@ -81,7 +80,6 @@
 /Users/snkasthu/SourceCode/ohiedemo/pocdemo/src/main/java/org/regenstrief/hl7/datatype/CN.java
 /Users/snkasthu/SourceCode/ohiedemo/pocdemo/src/main/java/org/regenstrief/hl7/segment/PV1.java
 /Users/snkasthu/SourceCode/ohiedemo/pocdemo/src/main/java/org/regenstrief/hl7/util/IdNameData.java
-/Users/snkasthu/SourceCode/ohiedemo/pocdemo/src/main/java/org/regenstrief/ohie/InfoMan.java
 /Users/snkasthu/SourceCode/ohiedemo/pocdemo/src/main/java/org/regenstrief/hl7/segment/HL7Segment.java
 /Users/snkasthu/SourceCode/ohiedemo/pocdemo/src/main/java/org/regenstrief/util/criterion/Criterion.java
 /Users/snkasthu/SourceCode/ohiedemo/pocdemo/src/main/java/org/regenstrief/hl7/util/ExpandedConceptData.java
@@ -118,6 +116,7 @@
 /Users/snkasthu/SourceCode/ohiedemo/pocdemo/src/main/java/org/regenstrief/database/EntityIdentifier.java
 /Users/snkasthu/SourceCode/ohiedemo/pocdemo/src/main/java/org/regenstrief/hl7/datatype/TS.java
 /Users/snkasthu/SourceCode/ohiedemo/pocdemo/src/main/java/org/regenstrief/hl7/util/AbstractAddressData.java
+/Users/snkasthu/SourceCode/ohiedemo/pocdemo/src/main/java/org/ohie/pocdemo/form/util/InfoMan.java
 /Users/snkasthu/SourceCode/ohiedemo/pocdemo/src/main/java/org/ohie/pocdemo/form/util/NewClientRegistryUtil.java
 /Users/snkasthu/SourceCode/ohiedemo/pocdemo/src/main/java/org/ohie/pocdemo/form/validator/PatientValidator.java
 /Users/snkasthu/SourceCode/ohiedemo/pocdemo/src/main/java/org/regenstrief/hl7/util/AbstractConceptData.java
@@ -140,7 +139,6 @@
 /Users/snkasthu/SourceCode/ohiedemo/pocdemo/src/main/java/org/regenstrief/hl7/datatype/NM.java
 /Users/snkasthu/SourceCode/ohiedemo/pocdemo/src/main/java/org/regenstrief/io/IoUtil.java
 /Users/snkasthu/SourceCode/ohiedemo/pocdemo/src/main/java/org/regenstrief/util/convert/CastConverter.java
-/Users/snkasthu/SourceCode/ohiedemo/pocdemo/src/main/java/org/ohie/pocdemo/form/util/AInfoMan.java
 /Users/snkasthu/SourceCode/ohiedemo/pocdemo/src/main/java/org/regenstrief/util/reflect/ReflectUtil.java
 /Users/snkasthu/SourceCode/ohiedemo/pocdemo/src/main/java/org/regenstrief/hl7/datatype/XCN.java
 /Users/snkasthu/SourceCode/ohiedemo/pocdemo/src/main/java/org/regenstrief/hl7/datatype/ELD.java

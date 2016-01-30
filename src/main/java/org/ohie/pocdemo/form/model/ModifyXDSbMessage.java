@@ -200,7 +200,7 @@ public class ModifyXDSbMessage {
 
                 }
 
-                NodeList documentBlob = doc.getElementsByTagName("Document");
+               /** NodeList documentBlob = doc.getElementsByTagName("Document");
                 byte[]   bytesEncoded = documentBlob.item(0).getFirstChild().getNodeValue().getBytes();
 
                 byte[] valueDecoded = Base64.decodeBase64(bytesEncoded);
@@ -214,10 +214,11 @@ public class ModifyXDSbMessage {
 
                 System.out.println("Encoded value is " + new String(valueEncoded));
 
-                documentBlob.item(0).getFirstChild().setNodeValue(new String(valueEncoded));
+                documentBlob.item(0).getFirstChild().setNodeValue(new String(valueEncoded)); **/
 
 
                 // write the content into xml file
+
                 TransformerFactory transformerFactory = TransformerFactory.newInstance();
                 Transformer transformer = transformerFactory.newTransformer();
                 DOMSource source = new DOMSource(doc);
