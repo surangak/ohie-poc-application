@@ -19,7 +19,6 @@ org/regenstrief/util/Dates.class
 org/regenstrief/util/property/MapPropertyResolver.class
 org/regenstrief/hl7/datatype/FC.class
 org/regenstrief/hl7/util/AbstractNumericData.class
-org/ohie/pocdemo/form/model/AphpDocument.class
 org/regenstrief/hl7/datatype/CQ.class
 org/regenstrief/hl7/datatype/CK.class
 org/regenstrief/xml/RegenPath$RegenPathToken.class
@@ -39,6 +38,7 @@ org/regenstrief/hl7/datatype/DT.class
 org/regenstrief/hl7/util/HL7IO$HL7IOException.class
 org/regenstrief/hl7/util/NameData.class
 org/regenstrief/hl7/util/CheckedIdData.class
+org/ohie/pocdemo/form/util/ClientRegistryUtil$HL7IOException.class
 org/regenstrief/hl7/util/ExpandedIdData.class
 org/regenstrief/hl7/datatype/CF.class
 org/regenstrief/hl7/group/HL7Group.class
@@ -66,6 +66,7 @@ org/regenstrief/hl7/util/NumericData.class
 org/regenstrief/hl7/datatype/XPN.class
 org/regenstrief/hl7/util/AbstractCheckedIdData.class
 org/regenstrief/hl7/datatype/CX.class
+org/ohie/pocdemo/form/PocReferenceService.class
 org/regenstrief/hl7/util/ScopeData.class
 org/ohie/pocdemo/form/model/Patient.class
 org/ohie/pocdemo/form/util/InfoMan$FacilityArgs.class
@@ -78,13 +79,15 @@ org/regenstrief/util/collection/AbstractTreeNode$DescendantNodeIterator.class
 org/ohie/pocdemo/form/util/InfoMan$BaseArgs.class
 org/regenstrief/hl7/util/MimeData.class
 org/ohie/pocdemo/form/util/InfoMan$CodedType.class
-org/ohie/pocdemo/form/util/NewClientRegistryUtil$HL7IOException.class
+org/ohie/pocdemo/form/util/ClientRegistryUtil$1.class
 org/regenstrief/hl7/datatype/CNE.class
 org/regenstrief/xml/RegenPath$RegenPathExpression.class
 org/regenstrief/xml/RegenPath$DescendantValueCriterion.class
+org/ohie/pocdemo/form/model/ReqResponsePair.class
 org/regenstrief/util/StopWatch$1.class
 org/regenstrief/util/criterion/AntiCriterion.class
 org/regenstrief/util/criterion/CharSequenceContainsCriterion.class
+org/ohie/pocdemo/form/model/Form.class
 org/regenstrief/util/collection/ConverterIterator.class
 org/regenstrief/xml/RegenPath.class
 org/regenstrief/xml/DOMIO.class
@@ -98,6 +101,7 @@ org/regenstrief/hl7/datatype/SI.class
 org/ohie/pocdemo/form/validator/PatientValidator.class
 org/regenstrief/util/property/ChainPropertyResolver.class
 org/regenstrief/hl7/util/BaseData.class
+org/ohie/pocdemo/form/model/PatientQuery.class
 org/ohie/pocdemo/form/util/XdsMessageUtil.class
 org/regenstrief/hl7/segment/PID.class
 org/regenstrief/util/MultiException.class
@@ -135,7 +139,6 @@ org/regenstrief/hl7/datatype/DLN.class
 org/regenstrief/hl7/util/IdData.class
 org/regenstrief/hl7/segment/USEG$SFLD.class
 org/regenstrief/hl7/datatype/SAD.class
-org/ohie/pocdemo/form/util/NewClientRegistryUtil$1.class
 org/regenstrief/util/criterion/Criteria.class
 org/regenstrief/hl7/segment/ERR.class
 org/regenstrief/hl7/util/AbstractScopeData.class
@@ -169,7 +172,6 @@ org/regenstrief/hl7/util/HL7IO.class
 org/regenstrief/hl7/convert/OutputUtil.class
 org/regenstrief/hl7/datatype/XTN.class
 org/regenstrief/util/reflect/ReflectUtil.class
-org/ohie/pocdemo/form/util/NewClientRegistryUtil.class
 org/regenstrief/util/collection/ConverterIterable.class
 org/ohie/pocdemo/form/util/InfoMan.class
 org/ohie/pocdemo/form/validator/FormValidator.class

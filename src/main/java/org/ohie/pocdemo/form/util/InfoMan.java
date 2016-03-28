@@ -15,6 +15,7 @@ package org.ohie.pocdemo.form.util;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.ohie.pocdemo.form.model.ReqResponsePair;
 import org.regenstrief.util.Util;
 import org.w3c.dom.NodeList;
 
@@ -182,7 +183,6 @@ public class InfoMan {
                 orig = getOneReplacement(orig, i, "");
             }
             this.original = orig;
-//System.out.println(this.original);
         }
 
         private String fill(final String in, final Object val) {
@@ -257,9 +257,18 @@ public class InfoMan {
         return Util.isEmpty(propMax) ? null : Integer.valueOf(propMax);
     }
 
-    public String getFacilities(final FacilityArgs args) throws Exception {
+    public ReqResponsePair getFacilities(final FacilityArgs args) throws Exception {
         System.out.println("eeek");
-        return invokeXml(getFacilitySearch(args), "facility");
+        String req = getFacilitySearch(args);
+        String respone =  invokeXml(req, "facility");
+
+        ReqResponsePair reqResponsePair = new ReqResponsePair();
+        reqResponsePair.setRequest(req);
+
+        System.out.println("req==" + reqResponsePair.getRequest());
+        reqResponsePair.setResponse(respone);
+
+        return reqResponsePair;
     }
 
     private final String getFacilitySearch(final FacilityArgs args) throws Exception {
@@ -267,12 +276,28 @@ public class InfoMan {
             TMP_FACILITY_SEARCH = Util.readFile("/Users/snkasthu/SourceCode/ohiedemo/pocdemo/src/main/resources/infoman/FacilitySearch.xml");
         }
         String req = fill(TMP_FACILITY_SEARCH, "primaryName", args.primaryName);
+
+        if (args.getMax() == null) {
+            args.setMax(-1);
+        }
+
         req = fill(req, "max", String.valueOf(args.getMax()));
         return req;
     }
 
-    public String getProviders(final ProviderArgs args) throws Exception {
-        return invokeXml(getProviderSearch(args), "provider");
+    public ReqResponsePair getProviders(final ProviderArgs args) throws Exception {
+
+        String req = getProviderSearch(args);
+
+        ReqResponsePair reqResponsePair = new ReqResponsePair();
+        reqResponsePair.setRequest(req);
+
+        String respone =  invokeXml(req, "provider");
+
+        System.out.println("req==" + reqResponsePair.getRequest());
+        reqResponsePair.setResponse(respone);
+
+        return reqResponsePair;
     }
 
     private final String getProviderSearch(final ProviderArgs args) throws Exception {
@@ -280,11 +305,14 @@ public class InfoMan {
             TMP_PROVIDER_SEARCH = Util.readFile("/Users/snkasthu/SourceCode/ohiedemo/pocdemo/src/main/resources/infoman/ProviderSearch.xml");
         }
         String req = fill(TMP_PROVIDER_SEARCH, "commonName", args.commonName);
-        //req = fill(req, "organizations/organization/@entityID", args.organization);
-        //req = fill(req, "facilities/facility/@entityID", args.facility);
-        //req = fill(req, "codedType/@code;codingScheme", args.type);
-        req = fill(req, "max", 1);
+
+        if (args.getMax() == null) {
+            args.setMax(-1);
+        }
+
+        req = fill(req, "max", String.valueOf(args.getMax()));
         return req;
+
     }
 
     private String invokeXml(String req, final String tag) throws Exception {

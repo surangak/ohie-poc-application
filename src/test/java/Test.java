@@ -1,13 +1,4 @@
-import ca.uhn.hl7v2.model.Message;
-import ca.uhn.hl7v2.parser.PipeParser;
-import org.ohie.pocdemo.form.model.ModifyXDSbMessage;
-import org.ohie.pocdemo.form.model.Patient;
-import org.ohie.pocdemo.form.model.Provider;
-import org.ohie.pocdemo.form.util.NewClientRegistryUtil;
-import org.regenstrief.util.Util;
-
 import javax.xml.xpath.XPathExpressionException;
-import java.io.IOException;
 
 public class Test {
 

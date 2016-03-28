@@ -11,7 +11,7 @@ import static org.junit.Assert.fail;
 
 public class MainUtil {
 
-    public static Message createPatient(Patient patient){
+   /** public static Message createPatient(Patient patient){
 
         Message response = null;
 
@@ -47,20 +47,27 @@ public class MainUtil {
             String lastDelim = "RCP";
             int p2 = in.indexOf(lastDelim, p1);   // look after start delimiter
             //String replacement = "@PID.3.1^" + patient.getIdentifier() + "\n";
-            String replacement = "@PID.3.1^" + patient.getIdentifier() + "~@PID.3.4.1^" + patient.getIdentifierType() + "\n";
+            String replacement = "@PID.3.1^" + patient.getIdentifier() + "~@PID.3.4.1^" + patient.getIdentifierType();
 
             System.out.println("message 3->" + replacement);
 
+            System.out.println("res is " + res);
+
             if (p1 >= 0 && p2 > p1) {
+                System.out.println("res is " + res);
+System.out.println(p1);
+                System.out.println(in);
                 res = in.substring(0, p1 + firstDelim.length())
                         + replacement
                         + in.substring(p2);
                 System.out.println("message 4->" + res);
+            }else{
+                System.out.println(" no go there");
             }
         }catch(Exception e){
 e.printStackTrace();
         }
-            return res;
-    }
+            return in;
+    } **/
 
 }

@@ -60,12 +60,12 @@ public class XdsMessageUtil {
      * @throws javax.xml.bind.JAXBException
      * @throws IOException
      */
-    public static <T> T loadMessage(String messageName, Class<T> clazz) throws JAXBException, IOException
+    public static <T> T loadMessage(String path, Class<T> clazz) throws JAXBException, IOException
     {
         JAXBContext jaxbContext = JAXBContext.newInstance("org.dcm4chee.xds2.infoset.ihe:org.dcm4chee.xds2.infoset.rim");
         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
-        URL fileUrl = XdsMessageUtil.class.getResource(String.format("/xds/%s.xml", messageName));
+        URL fileUrl = new URL("file:///" + path);
 
         System.out.println(" ****  " + fileUrl.toString());
         File fileUnderTest = new File(fileUrl.getFile());

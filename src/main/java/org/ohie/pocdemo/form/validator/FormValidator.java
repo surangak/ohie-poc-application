@@ -6,16 +6,16 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
-import org.ohie.pocdemo.form.model.AphpDocument;
+import org.ohie.pocdemo.form.model.Form;
 
 public class FormValidator implements Validator {
 
 	public boolean supports(Class<?> paramClass) {
-		return AphpDocument.class.equals(paramClass);
+		return Form.class.equals(paramClass);
 	}
 
 	public void validate(Object obj, Errors errors) {
-		AphpDocument form = (AphpDocument) obj;
+		Form form = (Form) obj;
 
 
 	}

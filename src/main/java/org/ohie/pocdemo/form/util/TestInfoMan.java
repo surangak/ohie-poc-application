@@ -14,11 +14,12 @@ package org.ohie.pocdemo.form.util;
  */
 
 import junit.framework.TestCase;
+import org.ohie.pocdemo.form.model.ReqResponsePair;
 import org.ohie.pocdemo.form.util.InfoMan;
 import org.regenstrief.util.Util;
 import org.regenstrief.util.XMLUtil;
 import org.w3c.dom.NodeList;
-
+import java.util.Map;
 
 import junit.framework.TestCase;
 import org.ohie.pocdemo.form.util.InfoMan.CodedType;
@@ -57,7 +58,7 @@ public class TestInfoMan extends TestCase {
 
     private static InfoMan.ProviderArgs provArgs = null;
 
-    public String testInfoMan(String facilityName, int maxResponses) throws Exception {
+    public ReqResponsePair testInfoMan(String facilityName, int maxResponses) throws Exception {
         InfoMan.setDefaultMax(maxResponses);
         InfoMan.setCredentials(USERNAME, PASSWORD);
 
@@ -72,7 +73,7 @@ public class TestInfoMan extends TestCase {
 
     }
 
-    public String testProvider(String providerName, int maxResponses) throws Exception {
+    public ReqResponsePair testProvider(String providerName, int maxResponses) throws Exception {
         InfoMan.setDefaultMax(maxResponses);
         InfoMan.setCredentials(USERNAME, PASSWORD);
 

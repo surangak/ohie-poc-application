@@ -12,6 +12,8 @@ public class Patient {
 
     private String lastName;
 
+    private String mname;
+
     private String dob;
 
     private String gender;
@@ -40,10 +42,11 @@ public class Patient {
         this.lastName = lastName;
     }
 
-    public Patient(String id, String firstName, String lastName, String identifier, String identifierType, String dob, String gender){
+    public Patient(String id, String firstName, String mname, String lastName, String identifier, String identifierType, String dob, String gender){
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.mname = mname;
         this.identifier = identifier;
         this.identifierType = identifierType;
         this.dob = dob;
@@ -89,5 +92,13 @@ public class Patient {
 
     public void setGender(String gender) {
         this.gender = gender;
+    }
+
+    public String getMname() {
+        return mname;
+    }
+
+    public void setMname(String mname) {
+        this.mname = mname;
     }
 }

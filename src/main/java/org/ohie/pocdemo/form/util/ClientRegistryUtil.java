@@ -1,295 +1,262 @@
+/**
+ * The contents of this file are subject to the Regenstrief Public License
+ * Version 1.0 (the "License"); you may not use this file except in compliance with the License.
+ * Please contact Regenstrief Institute if you would like to obtain a copy of the license.
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * Copyright (C) Regenstrief Institute.  All Rights Reserved.
+ */
 package org.ohie.pocdemo.form.util;
 
-import ca.uhn.hl7v2.DefaultHapiContext;
-import ca.uhn.hl7v2.HL7Exception;
-import ca.uhn.hl7v2.HapiContext;
-import ca.uhn.hl7v2.app.Connection;
-import ca.uhn.hl7v2.app.Initiator;
-import ca.uhn.hl7v2.llp.LLPException;
-import ca.uhn.hl7v2.model.*;
-import ca.uhn.hl7v2.parser.PipeParser;
-import ca.uhn.hl7v2.util.Terser;
-import ca.uhn.hl7v2.validation.builder.support.DefaultValidationBuilder;
+import java.io.*;
+import java.net.Socket;
+import java.net.UnknownHostException;
+
+import org.regenstrief.util.Util;
+import org.ohie.pocdemo.form.model.PatientQuery;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.Assert;
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
+import junit.framework.TestCase;
 
-import static org.junit.Assert.fail;
+/**
+ * TestClientRegistry
+ */
+public class ClientRegistryUtil extends TestCase {
 
-public class ClientRegistryUtil {
+    private static final Log log = LogFactory.getLog(ClientRegistryUtil.class);
 
-    private static Log log = LogFactory.getLog(ClientRegistryUtil.class);
+    private final static String HOST = "iol.test.ohie.org";
 
-    // OpenHIE endpoint
-    private static String s_endpoint = "crlin.test.ohie.org:3600";
-    private static String s_useTls = "false";
-    private static HapiContext s_hapiContext = null;
+    private final static int PORT_PIX = 8988;
 
-    /**
-     * Create hapi context
-     */
-    static {
+    private final static int PORT_PDQ = 8989;
 
-        if(s_endpoint == null)
-            s_endpoint = "localhost:2100";
+    static final int BOM = 11;
 
-        s_hapiContext = new DefaultHapiContext();
-        s_hapiContext.setValidationRuleBuilder(new DefaultValidationBuilder());
+    static final int EOM = 28;
 
-    }
+    static final int CR = 13;
 
-    /**
-     * Get a connection
-     * @return
-     */
-    private static Connection getConnection() {
+    public static int hl7_read_dbv = 0;
 
-        // Configure the endpoint
-        String hostName = s_endpoint.split(":")[0];
-        Integer hostPort = 2100;
-        Boolean useTls = false;
+    public PatientQuery send(PatientQuery patientQuery) throws Exception {
+        //return HL7IO.send_rcv_hl7_msg(HOST, getPort(in), 0, HL7IO.convert_lf_to_cr(in));
+
+        //in = in.replace("|2.5", "|2.5\n");
+
+        int port = getPort(patientQuery.getQuery());
+
+        //String host_1 = "crwin.test.ohie.org";
+        final Socket sd = connect(HOST, port, 0);
+        Writer w;
+        BufferedReader r;
 
         try {
-            hostPort = Integer.parseInt(s_endpoint.split(":")[1]);
-            System.out.println("TEST "  + hostPort);
-            useTls = Boolean.parseBoolean(s_useTls);
-        } catch (NumberFormatException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            w = new PrintWriter(new BufferedOutputStream(getOutputStream(HOST, port, sd)));
+            r = new BufferedReader(new InputStreamReader(getInputStream(HOST, port, sd)));
+            patientQuery.setResponse(send_rcv_hl7_msg(HOST, port, w, r, patientQuery.getQuery(), null));
+            return patientQuery;
+        } finally {
+            sd.close();
         }
+    }
 
+
+    public static String send_rcv_hl7_msg(final String host, final int port, final Writer dsd_w, final Reader dsd_r,
+                                          final String msg, final String header) throws IOException {
         try {
-            return s_hapiContext.newClient(hostName, hostPort, useTls);
-        } catch (HL7Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            throw new RuntimeException(e);
+            send_hl7_msg(dsd_w, msg, header);
+        } catch (final Exception e) {
+            throw new HL7IOException("Could not send HL7 to " + host + ":" + port, e);
         }
-
-    }
-
-    /**
-     * Load a message from resources
-     * @param message
-     * @return
-     * @throws IOException
-     * @throws HL7Exception
-     */
-    public static Message loadMessage(String message) throws IOException, HL7Exception
-    {
-        message = message.replace('\n', '\r');
-
-            return new PipeParser().parse(message);
-
-
-    }
-
-    /**
-     * Send a message and parse the response
-     * @param request
-     * @return
-     * @throws IOException
-     * @throws LLPException
-     * @throws HL7Exception
-     */
-    public static Message sendMessage(Message request) throws HL7Exception, LLPException, IOException {
-        Terser requestTerser = new Terser(request);
-        requestTerser.set("/MSH-7", new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
-        try
-        {
-            requestTerser.set("/EVN-2", requestTerser.get("/MSH-7"));
-        }
-        catch(Exception e) {}
-
-        log.debug(new PipeParser().encode(request));
-        Connection conn = ClientRegistryUtil.getConnection();
-        System.out.println("Port : " );
-        Initiator init = conn.getInitiator();
-        Message response = init.sendAndReceive(request);
-        log.debug(new PipeParser().encode(response));
-        return response;
-    }
-
-    /**
-     * Assert the message was rejected
-     * @param assertTerser
-     * @throws HL7Exception
-     */
-    public static void assertRejected(Terser assertTerser) throws HL7Exception {
-        String response = assertTerser.get("/MSA-1");
-        Assert.assertTrue(String.format("Expected AR|AE but found %s",  response), Arrays.asList("AR","AE").contains(response));
-    }
-
-    /**
-     * Assert an accepted condition
-     * @param assertTerser
-     * @throws HL7Exception
-     */
-    public static void assertAccepted(Terser assertTerser) throws HL7Exception {
-        String response = assertTerser.get("/MSA-1");
-        Assert.assertTrue(String.format("Expected AA|CA but found %s",  response), Arrays.asList("AA","CA").contains(response));
-    }
-
-    /**
-     * Assert the receiving information
-     * @param assertTerser
-     * @param string
-     * @param string2
-     * @throws HL7Exception
-     */
-    public static void assertReceivingFacility(Terser assertTerser,
-                                               String device, String facility) throws HL7Exception {
-        Assert.assertEquals(device, assertTerser.get("/MSH-5"));
-        Assert.assertEquals(facility, assertTerser.get("/MSH-6"));
-    }
-
-    /**
-     * Assert a message type
-     * @param assertTerser
-     * @param string
-     * @param string2
-     * @throws HL7Exception
-     */
-    public static void assertMessageTypeVersion(Terser assertTerser, String eventCode,
-                                                String eventType, String messageType, String version) throws HL7Exception {
-        // TODO Auto-generated method stub
-        Assert.assertEquals(eventCode, assertTerser.get("/MSH-9-1"));
-        Assert.assertEquals(eventType, assertTerser.get("/MSH-9-2"));
-        if(messageType != null)
-            Assert.assertEquals(messageType, assertTerser.get("/MSH-9-3"));
-        Assert.assertEquals(version, assertTerser.get("/MSH-12"));
-    }
-
-    /**
-     * Has PID 3 with specified AA and OID
-     * @param segment
-     * @param string
-     * @param tEST_DOMAIN_OID
-     * @throws HL7Exception
-     */
-    public static void assertHasPID3Containing(Segment segment, String idNumber, String namespaceId,
-                                               String universalId) throws HL7Exception {
-
-        Assert.assertEquals("PID", segment.getName());
-        assertHasPIDContainingId(segment, 3, idNumber, namespaceId, universalId);
-
-    }
-
-    /**
-     * Assert the PID segment has a field identifier with the value specified
-     * @throws HL7Exception
-     * @throws DataTypeException
-     */
-    public static void assertHasPIDContainingId(Segment segment, int fieldNo, String idNumber, String namespaceId,
-                                                String universalId) throws DataTypeException, HL7Exception {
-        boolean hasMatch = false;
-        for(Type typ : segment.getField(fieldNo))
-        {
-            AbstractComposite cx = (AbstractComposite)typ,
-                    cx4 = (AbstractComposite)cx.getComponent(3);
-
-            // Assert has CX.4.1 and CX.4.2 and CX4.3
-            Assert.assertNotNull(cx4.getComponent(0));
-            Assert.assertNotNull(cx4.getComponent(1));
-            Assert.assertNotNull(cx4.getComponent(2));
-
-            System.out.println("Debug --> ");
-            System.out.println(idNumber);
-            System.out.println(cx4.getComponent(0).toString() + " " + namespaceId );
-            System.out.println(cx4.getComponent(1).toString() + " " + universalId);
-            System.out.println(cx4.getComponent(2).toString());
-
-
-            // Determine match
-            hasMatch = hasMatch ||
-                    (idNumber == null || idNumber.equals(cx.getComponent(0).toString())) &&
-                            cx4.getComponent(0).toString().equals(namespaceId) &&
-                            cx4.getComponent(1).toString().equals(universalId) &&
-                            cx4.getComponent(2).toString().equals("ISO");
-        }
-        System.out.println(hasMatch);
-        System.out.println(String.format("Expected PID to have identifier with %s&%s&ISO", namespaceId, universalId));
-
-        Assert.assertTrue(String.format("Expected PID to have identifier with %s&%s&ISO", namespaceId, universalId), hasMatch);
-    }
-
-    /**
-     * Has PID 3 with specified AA and OID is the only identifier
-     * @param segment
-     * @param string
-     * @param tEST_DOMAIN_OID
-     * @throws HL7Exception
-     */
-    public static void assertHasPID3Only(Segment segment, String idNumber, String namespaceId,
-                                         String universalId) throws HL7Exception {
-
-        Assert.assertEquals("PID", segment.getName());
-        for(Type typ : segment.getField(3))
-        {
-            AbstractComposite cx = (AbstractComposite)typ,
-                    cx4 = (AbstractComposite)cx.getComponent(3);
-
-            // Assert has CX.4.1 and CX.4.2 and CX4.3
-            Assert.assertNotNull(cx4.getComponent(0));
-            Assert.assertNotNull(cx4.getComponent(1));
-            Assert.assertNotNull(cx4.getComponent(2));
-
-            // Determine match
-            Assert.assertEquals(namespaceId, cx4.getComponent(0).toString());
-            Assert.assertEquals(universalId, cx4.getComponent(1).toString());
-            if(idNumber != null)
-                Assert.assertEquals(idNumber, cx.getComponent(0).toString());
+        try {
+            System.out.println("going to read...");
+            return read_hl7_msg(dsd_r);
+        } catch (final Exception e) {
+            throw new HL7IOException("Could not receive HL7 from " + host + ":" + port, e);
         }
     }
 
-    /**
-     * Assert terser has ERR
-     * @param assertTerser
-     */
-    public static void assertHasERR(Terser assertTerser) {
-        try
-        {
-            // Should throw
-            assertTerser.getSegment("/ERR");
+    public static String read_hl7_msg(final Reader br) throws IOException {
+        final int ldbv = hl7_read_dbv;
+        //int ccnt = 0;
+        int ach = br.read();
+        if (ldbv > 0) {
+            System.out.println("1");
+            dp("ach.1 = ", ach);
         }
-        catch(Exception e)
-        {
-            Assert.fail("Should have ERR segment");
+
+        if (ach == -1) {
+            System.out.println("2");
+
+            dp("Bad socket in first read [read_hl7_msg]");
+            throw new HL7IOException("EndOfSocket");
+        } else if (ach == CR) {
+            System.out.println("3");
+
+            // skip the CR after EOM
+            ach = br.read();
+            if (ldbv > 0) {
+                System.out.println("4");
+
+                dp("skip cr, leaving ach = ", ach);
+            }
+        }
+        while (ach != BOM) {
+            System.out.println("5");
+
+            if (ach == -1) {
+                dp("Bad socket in looking for BOM read [read_hl7_msg]");
+                throw new HL7IOException("EndOfSocket");
+            } else if (ldbv > 0) {
+                // sloughing ach
+                dp("slough.ach = ", ach);
+            }
+            ach = br.read();
+        }
+
+        final StringBuffer sb = new StringBuffer();
+        if (ldbv > 0) {
+            System.out.println("6");
+
+            dp("After bom=", ach);
+        }
+        ach = br.read();
+
+        if (ldbv > 0) {
+            System.out.println("7");
+
+            dp("Start collecting:", ach);
+        }
+        while (ach != EOM) {
+            System.out.println("8");
+
+            if (ach == -1) {
+                dp("Bad socket in looking for EOM read [read_hl7_msg]");
+                throw new HL7IOException("EndOfSocket");
+            }
+            sb.append((char) ach);
+            if (ldbv > 3) {
+                dp("Found:" + sb.length() + " ch:=" + ach);
+            }
+            ach = br.read();
+        }
+        if (ldbv > 0) {
+            System.out.println("9");
+
+            dp("Done collecting ach=" + ach + " sb.length=" + sb.length());
+        }
+
+        System.out.println(" read : " + sb.toString());
+        return sb.toString();
+    }
+
+    public static void dp(final String pmt, final int a1) {
+        //dtabprint();
+        log.info(pmt + "{" + a1 + "}");
+    }
+
+    public static void dp(final String pmt, final Object... a) {
+        //dtabprint();
+        final StringBuilder sb = new StringBuilder();
+        sb.append(pmt);
+        for (final Object an : a) {
+            sb.append("{" + an + "}");
+        }
+        log.info(sb);
+    }
+
+
+    public static void send_hl7_msg(final Writer os, final String msg, final String header) throws IOException {
+        /*
+        \x0b17:MSH|^~\&|XXXX|YYYY\x0d\x1c\x0b
+        HL7 MESSAGE
+        \x1c
+
+        \x0b = [0][11] = 11
+        \x0d = [0][13] = 13
+        \x1c = [1][12] = 1 * 16 + 12 = 28
+        */
+
+        if (header != null) {
+            os.write(11);
+            os.write("17:");
+            os.write(header);
+            os.write(13);
+            os.write(28);
+        }
+        os.write(11);
+        os.write(msg);
+        os.write(28);
+        os.write(13);
+        os.flush();
+    }
+
+    public static Socket connect(final String host, final int port, int nrRetries) throws UnknownHostException, IOException {
+        final String prop = "100000";
+        final int timeout = prop == null ? -1 : Integer.parseInt(prop);
+
+        while (nrRetries-- >= 0) {
+            try {
+                final Socket rv = new Socket(host, port);
+                if (timeout >= 0) {
+                    rv.setSoTimeout(timeout);
+                }
+
+                return rv;
+            } catch (final UnknownHostException e) {
+                e.fillInStackTrace();
+                //Utl.dp("connect failed: unknownHost:", host, port);
+                throw e;
+            } catch (final IOException e) {
+                if (nrRetries < 0) {
+                    e.fillInStackTrace();
+                    //Utl.dp("connect failed: connection refused:", host, port);
+                    throw e;
+                }
+               // sleep(10);
+            }
+        }
+        throw new HL7IOException("connect nr retries exceeded:" + host + "|" + port + "|" + nrRetries);
+    }
+
+    private static OutputStream getOutputStream(final String host, final int port, final Socket sd) throws IOException {
+        try {
+            return sd.getOutputStream();
+        } catch (final Exception e) {
+            throw new HL7IOException("Could not open HL7 OutputStream for " + host + ":" + port, e);
         }
     }
 
-    /**
-     * Assert only one PID segment is returned
-     * @param assertTerser
-     */
-    public static void assertHasOneQueryResult(Terser assertTerser) {
-
-        // Should not throw on first
-        try
-        {
-            // Terser should throw!
-            assertTerser.getSegment("/QUERY_RESPONSE(0)/PID");
+    private static InputStream getInputStream(final String host, final int port, final Socket sd) throws IOException {
+        try {
+            return sd.getInputStream();
+        } catch (final Exception e) {
+            throw new HL7IOException("Could not open HL7 InputStream for " + host + ":" + port, e);
         }
-        catch(Exception e)
-        {
-            Assert.fail("Must have one response");
-        }
-
-        // Should throw on second
-        try
-        {
-            // Terser should throw or skip!
-            Segment pid1 = assertTerser.getSegment("/QUERY_RESPONSE(1)/PID");
-            if(pid1 == null || pid1.isEmpty())
-                return;
-            fail();
-        }
-        catch(Exception e){}
-
     }
+
+    private int getPort(final String msg) {
+        return Util.contains(msg, "QBP^Q22") ? PORT_PDQ : PORT_PIX;
+    }
+
+    public final static class HL7IOException extends IOException {
+
+        private static final long serialVersionUID = 1L;
+
+        private HL7IOException(final String msg) {
+            super(msg);
+        }
+
+        private HL7IOException(final String msg, final Throwable cause) {
+            super(msg, cause);
+        }
+    }
+
 }
